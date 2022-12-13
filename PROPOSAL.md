@@ -34,37 +34,124 @@ URI schema in this document is meant to improve people's interaction with conten
 Schema consists of URI schema `web+activitypub:` prefix, Activity Type and Activity parameters as query parameters.
 
 ```
-activitypub-schema := "web+activitypub" ":" activity-type ("?" activity-properties)
+activitypub-schema := "web+activitypub" ":" activity-type "?" activity-properties
 ```
 - `activity-type` defines one if Activity Types which is one of:
   * defined in [ActivityStreams Vocabulary](https://www.w3.org/TR/activitystreams-vocabulary/#activity-types) and has no prefix
   * compact IRI Term encoded [TODO: add link] as URI component (e.g. `group:Greet` which will be encoded as `group%3AGreet` given that `group` is _prefix_ and defined with compact IRI in `activity-properties`)
 - `activity-properties` is flat key-value list using URI query parameters encoding [TODO: add link] with following structure rules:
   * Keys and values should be used as defined in corresponding [ActivityStream Activity](https://www.w3.org/TR/activitystreams-vocabulary/#activity-types) but Activities and objects should be replaced with it's id.
-  * Compact IRI definitions **key** should use `"@context:" prefix` syntax which defines _prefix_ to be used in other , and **value** is URI encoded as URI component [TODO add link].
-  * Compact IRI terms keys should use `prefix ":" property` syntax which uses _prefix_ defined in IRI definition earlier and _property_ defined in IRI embeded in definition.
+  * Compact IRI Definitions **key** should use `"@context:" prefix` syntax which defines _prefix_ to be used in other properties and `activity-type`, and **value** is URI encoded as URI component [TODO add link].
+  * Compact IRI Terms keys should use `prefix ":" property` syntax which uses _prefix_ defined in IRI definition earlier and _property_ defined in IRI referenced in definition.
 
-## Support considirations
+IRI Definition key-value pairs SHOULD be listed before other key-value pairs in `activity-properties`
 
-Any non IRI Term Activity should be interpreted as defined in [ActivityPub Client to Server interaction](https://www.w3.org/TR/activitypub/#client-to-server-interactions).
+## URI Schema consuming
 
-Every application supporting this proposal is REQUIRED to implement `Follow` Activity Type as [defined in ActivtyPub](https://www.w3.org/TR/activitypub/#follow-activity-outbox).
+Application MUST handle `object` property in every supported Activity.
+Application MAY skip handling any properties it doesn't support.
 
-**TODO: define Announce activity handling**
+### ActivityPub Activities
+
+Application consuming described URI schema MUST implement `Follow` Activity Type as [defined in ActivtyPub](https://www.w3.org/TR/activitypub/#follow-activity-outbox).
+
+Application MAY consume Client Activities defined in [ActivityPub Client to Server interaction](https://www.w3.org/TR/activitypub/#client-to-server-interactions).
+
+### `Announce` Activity
+
+Application MAY consume type `Announce` with properties [defined in ActivityStreams Vocabulary](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-announce).
+Application MUST interpret `Announce` as a command to announce content referenced in `object` property.
+
+### Extended Activities and properties
+
+Application MAY support additional Activity Types and property extentions defined in compact IRI definitions.
+Application MUST check support of IRI-defined activities and properties only by IRI and not by prefix.
 
 ## Examples
 
-### Follow activity URI
+### `Follow` Activity URI
+
 ```
 web+activitypub:Follow?object=https%3A%2F%2Fmastodon.ml%2Fusers%2Fbano
 ```
-Given URI asks application to follow Actor with id `https://mastodon.ml/users/bano`.
+This URI represents following Activity:
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Follow",
+  "object": "https://mastodon.ml/users/bano"
+}
+```
+Given Activity asks application to follow Actor with id `https://mastodon.ml/users/bano`.
 
 
 ```
 web+activitypub:Follow?object=acct%3Abano%40mastodon.ml
 ```
+This URI represents following Activity:
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Follow",
+  "object": "acct:bano@mastodon.ml"
+}
+```
 URI asks application to follow Actor with `acct:bano@mastodon.ml` which will be resolved to `https://mastodon.ml/users/bano` using WebFinger.
+
+### `Announce` Activity URI
+
+```
+web+activitypub:Announce?object=https%3A%2F%2Fexample.org%2Fstatus%2Fcat-greeting
+```
+This URI represents following Activity:
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Announce",
+  "object": "https://example.org/status/cat-greeting"
+}
+```
+Which asks application to announce (share/boost/repost) `cat-greeting` Activity.
+
+### Extended Activities
+
+> NOTE: URIs in this section are split in lines to be readable.
+
+Next URI shows how to use extended Activity Types and extended properties
+```
+web+activitypub:cat%3AHug?
+%40context%3Acat=https%3A%2F%2Fexample.com%2Fcat-lovers%23&
+object=https%3A%2F%2Fexample.org%2Fstatus%2Fcat-greeting&
+cat%3Aname=Snowball
+```
+After parsing URI we can get data:
+```json
+{
+  "type": "cat:Hug",
+  "properties": [
+    { "@context:cat": "" },
+    { "object": "https://example.org/status/cat-greeting" },
+    { "cat:name": "Snowball" }
+  ]
+}
+```
+
+Which should be interpreted as following Activity:
+```json
+{
+  "@context": [
+    "https://www.w3.org/ns/activitystreams",
+    {"cat": "https://example.com/cat-lovers#"}
+  ],
+  "type": "cat:Hug",
+  "object": "https://example.org/status/cat-greeting",
+  "cat:name": "Snowball"
+}
+```
+
+
+
+
 
 ## History
 
