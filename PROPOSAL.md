@@ -1,6 +1,6 @@
 # ActivityPub URI Schema Proposal
 
-This is a Draft proposal of URI schema meant to be used across fedirated applications using ActivityPub protocol to improve people's experiance and increase interoperability.
+This is a Draft proposal of URI schema meant to be used across federated applications using ActivityPub protocol to improve people's experience and increase interoperability.
 
 ## Definitions
 
@@ -21,10 +21,10 @@ This is a Draft proposal of URI schema meant to be used across fedirated applica
 
 ## Rationale
 
-Fedirated applications in current state do exchange information effectively among servers if both Actors established a subscription.
-Many applications implemented in-app views of links in Fediverse so that people do not have to leave their application and most of them implement Foolow button in such views.
+Federated applications in current state do exchange information effectively among servers if both Actors established a subscription.
+Many applications implemented in-app views of links in Fediverse so that people do not have to leave their application and most of them implement Follow button in such views.
 But people might explore web outside of their beloved application or their application may not implement such in-app views and ask people to see pages or posts on original website.
-In both cases people are not able to interact with such fedirated content or Actors.
+In both cases people are not able to interact with such federated content or Actors.
 Usually people are forced to copy link to the content or Actor they are interested and paste it inside their application to perform actions from this application.
 
 URI schema in this document is meant to improve people's interaction with content and Actors and to improve applications interoperability. Proposal also tries to make URI schema extensible 
@@ -53,7 +53,7 @@ Application MAY skip handling any properties it doesn't support.
 
 ### ActivityPub Activities
 
-Application consuming described URI schema MUST implement `Follow` Activity Type as [defined in ActivtyPub](https://www.w3.org/TR/activitypub/#follow-activity-outbox).
+Application consuming described URI schema MUST implement `Follow` Activity Type as [defined in ActivityPub](https://www.w3.org/TR/activitypub/#follow-activity-outbox).
 
 Application MAY consume Client Activities defined in [ActivityPub Client to Server interaction](https://www.w3.org/TR/activitypub/#client-to-server-interactions).
 
@@ -64,7 +64,7 @@ Application MUST interpret `Announce` as a command to announce content reference
 
 ### Extended Activities and properties
 
-Application MAY support additional Activity Types and property extentions defined in compact IRI definitions.
+Application MAY support additional Activity Types and property extensions defined in compact IRI definitions.
 Application MUST check support of IRI-defined activities and properties only by IRI and not by prefix.
 
 ## Examples
