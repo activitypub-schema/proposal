@@ -8,7 +8,7 @@ Implementing this specifications enables Fediverse applications to Follow people
 
 ## Contribution
 
-If you have any corrections or language fixes feel free to create a Pull Request!
+If you have any corrections or found a typo feel free to create a Pull Request!
 
 ## Contact
 
