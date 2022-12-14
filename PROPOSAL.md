@@ -29,22 +29,34 @@ Usually people are forced to copy link to the content or Actor they are interest
 
 URI schema in this document is meant to improve people's interaction with content and Actors and to improve applications interoperability. Proposal also tries to make URI schema extensible 
 
-## Schema definition
+## URI Schema 'web+activitypub:' definition
 
-Schema consists of URI schema `web+activitypub:` prefix, Activity Type and Activity parameters as query parameters.
-
+```ABNF
+activitypub-schema  = "web+activitypub:" activity-type activity-properties
+activity-type       = achars
+activity-properties = "?" activity-property *( "&" activity-property )
+activity-property   = property-name "=" property-value
+property-name       = achars
+property-value      = achars
+achars              = *( unreserved / pct-encoded )
 ```
-activitypub-schema := "web+activitypub" ":" activity-type "?" activity-properties
-```
-- `activity-type` defines one if Activity Types which is one of:
-  * defined in [ActivityStreams Vocabulary](https://www.w3.org/TR/activitystreams-vocabulary/#activity-types) and has no prefix
-  * compact IRI Term encoded [TODO: add link] as URI component (e.g. `group:Greet` which will be encoded as `group%3AGreet` given that `group` is _prefix_ and defined with compact IRI in `activity-properties`)
-- `activity-properties` is flat key-value list using URI query parameters encoding [TODO: add link] with following structure rules:
-  * Keys and values should be used as defined in corresponding [ActivityStream Activity](https://www.w3.org/TR/activitystreams-vocabulary/#activity-types) but Activities and objects should be replaced with it's id.
-  * Compact IRI Definitions **key** should use `"@context:" prefix` syntax which defines _prefix_ to be used in other properties and `activity-type`, and **value** is URI encoded as URI component [TODO add link].
-  * Compact IRI Terms keys should use `prefix ":" property` syntax which uses _prefix_ defined in IRI definition earlier and _property_ defined in IRI referenced in definition.
 
-IRI Definition key-value pairs SHOULD be listed before other key-value pairs in `activity-properties`
+`<activity-type>` defines an Activity Type.
+Activity Type can used either one of defined in [ActivityStreams Vocabulary](https://www.w3.org/TR/activitystreams-vocabulary/#activity-types)
+or can be percent-encoded [compact URI](https://www.w3.org/TR/activitystreams-core/#compact-uris).
+
+`<activity-property>` defines Activity properties.
+Both `<property-name>` and `<property-value>` are percent-encoded.
+Properties should be interpreted as described in [ActivityStreams 2.0](https://www.w3.org/TR/activitystreams-core/) with following considerations:
+- `<property-name>` MUST NOT be `type` since it's defined by `<activity-type>`,
+- values are always strings and can't represent complex types,
+- values should be casted from strings to type depending on JSON-LD expected term type,
+- all embedded objects should be referenced by URI,
+- property can define [compact URI prefix](https://www.w3.org/TR/activitystreams-core/#compact-uris) with key syntax `@context:<prefix>`.
+
+> **NOTE**: `web+` prefix rationale
+>
+> Currently most fedirated applications are operated using Web Browsers which [only allow registration of safelisted or prefixed schemes](https://html.spec.whatwg.org/multipage/system-state.html#normalize-protocol-handler-parameters).
 
 ## URI Schema consuming
 
