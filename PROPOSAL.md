@@ -15,9 +15,8 @@ This is a Draft proposal of URI schema meant to be used across federated applica
   <dd>
     <a href="https://www.w3.org/TR/activitystreams-vocabulary/#actor-types">Defined</a> in ActivityStreams Vocabulary.
   </dd>
+
 </dl>
-
-
 
 ## Rationale
 
@@ -27,7 +26,7 @@ But people might explore web outside of their beloved application or their appli
 In both cases people are not able to interact with such federated content or Actors.
 Usually people are forced to copy link to the content or Actor they are interested and paste it inside their application to perform actions from this application.
 
-URI schema in this document is meant to improve people's interaction with content and Actors and to improve applications interoperability. Proposal also tries to make URI schema extensible 
+URI schema in this document is meant to improve people's interaction with content and Actors and to improve applications interoperability. Proposal also tries to make URI schema extensible.
 
 ## URI Schema 'web+activitypub:' definition
 
@@ -141,14 +140,14 @@ After parsing URI we can get data:
 {
   "type": "cat:Hug",
   "properties": [
-    { "@context:cat": "" },
+    { "@context:cat": "https://example.com/cat-lovers#" },
     { "object": "https://example.org/status/cat-greeting" },
     { "cat:name": "Snowball" }
   ]
 }
 ```
 
-Which should be interpreted as following Activity:
+which should be interpreted as following Activity:
 ```json
 {
   "@context": [
